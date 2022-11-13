@@ -1,7 +1,3 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
 import json
 import time
 import torch
@@ -97,35 +93,8 @@ class sample_version:
 
 
 class FreiHand(Hand21KeypointDataset):
-    """`FreiHand Dataset <https://lmb.informatik.uni-freiburg.de/projects/freihand/>`_
-
-    Args:
-        root (str): Root directory of dataset
-        split (str, optional): The dataset split, supports ``train``, ``test``, or ``all``.
-        task (str, optional): The post-processing option to create dataset. Choices include ``'gs'``: green screen \
-            recording, ``'auto'``: auto colorization without sample points: automatic color hallucination, \
-            ``'sample'``: auto colorization with sample points, ``'hom'``: homogenized, \
-            and ``'all'``: all hands. Default: 'all'.
-        download (bool, optional): If true, downloads the dataset from the internet and puts it \
-            in root directory. If dataset is already downloaded, it is not downloaded again.
-        transforms (callable, optional): A function/transform that takes in a dict (which contains PIL image and
-            its labels) and returns a transformed version. E.g, :class:`~common.vision.transforms.keypoint_detection.Resize`.
-        image_size (tuple): (width, height) of the image. Default: (256, 256)
-        heatmap_size (tuple): (width, height) of the heatmap. Default: (64, 64)
-        sigma (int): sigma parameter when generate the heatmap. Default: 2
-
-    .. note:: In `root`, there will exist following files after downloading.
-        ::
-            *.json
-            training/
-            evaluation/
-    """
-    def __init__(self, root, split='train', task='all', download=True, **kwargs):
-        if download:
-            if not osp.exists(osp.join(root, "training")) or not osp.exists(osp.join(root, "evaluation")):
-                download_and_extract_archive("https://lmb.informatik.uni-freiburg.de/data/freihand/FreiHAND_pub_v2.zip",
-                                             download_root=root, filename="FreiHAND_pub_v2.zip", remove_finished=False,
-                                             extract_root=root)
+    
+    def __init__(self, root, split='train', task='all', download=False, **kwargs):
 
         assert split in ['train', 'test', 'all']
         self.split = split
