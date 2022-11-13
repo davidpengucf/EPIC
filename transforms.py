@@ -1,8 +1,4 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
-# TODO needs better documentation
+
 import numpy as np
 from PIL import ImageFilter, Image
 import torchvision.transforms.functional as F
@@ -21,20 +17,7 @@ import torch
 from torchvision.transforms import Normalize
 
 class Denormalize(Normalize):
-    """DeNormalize a tensor image with mean and standard deviation.
-    Given mean: ``(mean[1],...,mean[n])`` and std: ``(std[1],..,std[n])`` for ``n``
-    channels, this transform will denormalize each channel of the input
-    ``torch.*Tensor`` i.e.,
-    ``output[channel] = input[channel] * std[channel] + mean[channel]``
-
-    .. note::
-        This transform acts out of place, i.e., it does not mutate the input tensor.
-
-    Args:
-        mean (sequence): Sequence of means for each channel.
-        std (sequence): Sequence of standard deviations for each channel.
-
-    """
+    
 
     def __init__(self, mean, std):
         mean = np.array(mean)
@@ -43,15 +26,7 @@ class Denormalize(Normalize):
 
 
 def wrapper(transform: ClassVar):
-    """ Wrap a transform for classification to a transform for keypoint detection.
-    Note that the keypoint detection label will keep the same before and after wrapper.
-
-    Args:
-        transform (class, callable): transform for classification
-
-    Returns:
-        transform for keypoint detection
-    """
+    
     class WrapperTransform(transform):
         def __call__(self, image, **kwargs):
             image = super().__call__(image)
@@ -90,22 +65,7 @@ def crop(image: Image.Image, top, left, height, width, keypoint2d: np.ndarray):
 
 def resized_crop(img, top, left, height, width, size, interpolation=Image.BILINEAR,
                  keypoint2d: np.ndarray=None, intrinsic_matrix: np.ndarray=None):
-    """Crop the given PIL Image and resize it to desired size.
-
-    Notably used in :class:`~torchvision.transforms.RandomResizedCrop`.
-
-    Args:
-        img (PIL Image): Image to be cropped. (0,0) denotes the top left corner of the image.
-        top (int): Vertical component of the top left corner of the crop box.
-        left (int): Horizontal component of the top left corner of the crop box.
-        height (int): Height of the crop box.
-        width (int): Width of the crop box.
-        size (sequence or int): Desired output size. Same semantics as ``resize``.
-        interpolation (int, optional): Desired interpolation. Default is
-            ``PIL.Image.BILINEAR``.
-    Returns:
-        PIL Image: Cropped image.
-    """
+    
     assert isinstance(img, Image.Image), 'img should be PIL Image'
     img, keypoint2d = crop(img, top, left, height, width, keypoint2d)
     img, keypoint2d, intrinsic_matrix = resize(img, size, interpolation, keypoint2d, intrinsic_matrix)
@@ -113,16 +73,7 @@ def resized_crop(img, top, left, height, width, size, interpolation=Image.BILINE
 
 
 def center_crop(image, output_size, keypoint2d: np.ndarray):
-    """Crop the given PIL Image and resize it to desired size.
-
-    Args:
-        img (PIL Image): Image to be cropped. (0,0) denotes the top left corner of the image.
-        output_size (sequence or int): (height, width) of the crop box. If int,
-            it is used for both directions
-
-    Returns:
-        PIL Image: Cropped image.
-    """
+    
     width, height = image.size
     crop_height, crop_width = output_size
     crop_top = int(round((height - crop_height) / 2.))
@@ -184,11 +135,7 @@ def resize_pad(img, keypoint2d, size, interpolation=Image.BILINEAR):
 
 
 class Compose(object):
-    """Composes several transforms together.
-
-    Args:
-        transforms (list of ``Transform`` objects): list of transforms to compose.
-    """
+    
 
     def __init__(self, transforms):
         self.transforms = transforms
@@ -266,14 +213,7 @@ class CenterCrop(object):
 
 
 class RandomRotation(object):
-    """Rotate the image by angle.
-
-    Args:
-        degrees (sequence or float or int): Range of degrees to select from.
-            If degrees is a number instead of sequence like (min, max), the range of degrees
-            will be (-degrees, +degrees).
-    """
-
+   
     def __init__(self, degrees):
         if isinstance(degrees, numbers.Number):
             if degrees < 0:
@@ -287,23 +227,13 @@ class RandomRotation(object):
 
     @staticmethod
     def get_params(degrees):
-        """Get parameters for ``rotate`` for a random rotation.
-
-        Returns:
-            sequence: params to be passed to ``rotate`` for random rotation.
-        """
+        
         angle = random.uniform(degrees[0], degrees[1])
 
         return angle
 
     def __call__(self, image, keypoint2d, **kwargs):
-        """
-        Args:
-            img (PIL Image): Image to be rotated.
-
-        Returns:
-            PIL Image: Rotated image.
-        """
+        
 
         angle = self.get_params(self.degrees)
 
@@ -315,19 +245,7 @@ class RandomRotation(object):
 
 
 class RandomResizedCrop(object):
-    """Crop the given PIL Image to random size and aspect ratio.
-
-    A crop of random size (default: of 0.08 to 1.0) of the original size and a random
-    aspect ratio (default: of 3/4 to 4/3) of the original aspect ratio is made. This crop
-    is finally resized to given size.
-    This is popularly used to train the Inception networks.
-
-    Args:
-        size: expected output size of each edge
-        scale: range of size of the origin size cropped
-        ratio: range of aspect ratio of the origin aspect ratio cropped
-        interpolation: Default: PIL.Image.BILINEAR
-    """
+    
 
     def __init__(self, size, scale=(0.6, 1.3), interpolation=Image.BILINEAR):
         self.size = size
@@ -339,16 +257,7 @@ class RandomResizedCrop(object):
 
     @staticmethod
     def get_params(img, scale):
-        """Get parameters for ``crop`` for a random sized crop.
-
-        Args:
-            img (PIL Image): Image to be cropped.
-            scale (tuple): range of size of the origin size cropped
-
-        Returns:
-            tuple: params (i, j, h, w) to be passed to ``crop`` for a random
-                sized crop.
-        """
+        
         width, height = img.size
         area = height * width
 
@@ -368,13 +277,7 @@ class RandomResizedCrop(object):
         return 0, 0, height, width
 
     def __call__(self, image, keypoint2d: np.ndarray, intrinsic_matrix: np.ndarray, **kwargs):
-        """
-        Args:
-            img (PIL Image): Image to be cropped and resized.
-
-        Returns:
-            PIL Image: Randomly cropped and resized image.
-        """
+        
         i, j, h, w = self.get_params(image, self.scale)
         image, keypoint2d, intrinsic_matrix = resized_crop(image, i, j, h, w, self.size, self.interpolation, keypoint2d, intrinsic_matrix)
         kwargs.update(keypoint2d=keypoint2d, intrinsic_matrix=intrinsic_matrix)
@@ -384,13 +287,7 @@ class RandomResizedCrop(object):
 
 
 class RandomApply(T.RandomTransforms):
-    """Apply randomly a list of transformations with a given probability.
-
-    Args:
-        transforms (list or tuple or torch.nn.Module): list of transformations
-        p (float): probability
-    """
-
+   
     def __init__(self, transforms, p=0.5):
         super(RandomApply, self).__init__(transforms)
         self.p = p
