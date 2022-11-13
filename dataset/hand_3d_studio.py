@@ -1,7 +1,3 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
 import os
 import json
 import random
@@ -17,45 +13,14 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 class Hand3DStudio(Hand21KeypointDataset):
-    """`Hand-3d-Studio Dataset <https://www.yangangwang.com/papers/ZHAO-H3S-2020-02.html>`_
-
-    Args:
-        root (str): Root directory of dataset
-        split (str, optional): The dataset split, supports ``train``, ``test``, or ``all``.
-        task (str, optional): The task to create dataset. Choices include ``'noobject'``: only hands without objects, \
-            ``'object'``: only hands interacting with hands, and ``'all'``: all hands. Default: 'noobject'.
-        download (bool, optional): If true, downloads the dataset from the internet and puts it \
-            in root directory. If dataset is already downloaded, it is not downloaded again.
-        transforms (callable, optional): A function/transform that takes in a dict (which contains PIL image and
-            its labels) and returns a transformed version. E.g, :class:`~common.vision.transforms.keypoint_detection.Resize`.
-        image_size (tuple): (width, height) of the image. Default: (256, 256)
-        heatmap_size (tuple): (width, height) of the heatmap. Default: (64, 64)
-        sigma (int): sigma parameter when generate the heatmap. Default: 2
-
-    .. note::
-        We found that the original H3D image is in high resolution while most part in an image is background,
-        thus we crop the image and keep only the surrounding area of hands (1.5x bigger than hands) to speed up training.
-
-    .. note:: In `root`, there will exist following files after downloading.
-        ::
-            H3D_crop/
-                annotation.json
-                part1/
-                part2/
-                part3/
-                part4/
-                part5/
-    """
-    def __init__(self, root, split='train', task='noobject', download=True, **kwargs):
+    
+    def __init__(self, root, split='train', task='noobject', download=False, **kwargs):
         assert split in ['train', 'test', 'all']
         self.split = split
         assert task in ['noobject', 'object', 'all']
         self.task = task
 
-        if download:
-            download_data(root, "H3D_crop", "H3D_crop.tar", "https://cloud.tsinghua.edu.cn/f/d4e612e44dc04d8eb01f/?dl=1")
-        else:
-            check_exits(root, "H3D_crop")
+        
 
         root = osp.join(root, "H3D_crop")
         # load labels
@@ -117,9 +82,6 @@ class Hand3DStudio(Hand21KeypointDataset):
 
 
 class Hand3DStudioAll(Hand3DStudio):
-    """
-    `Hand-3d-Studio Dataset <https://www.yangangwang.com/papers/ZHAO-H3S-2020-02.html>`_
-
-    """
+   
     def __init__(self,  root, task='all', **kwargs):
         super(Hand3DStudioAll, self).__init__(root, task=task, **kwargs)
