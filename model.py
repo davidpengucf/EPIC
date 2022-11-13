@@ -1,8 +1,3 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
-#from typing import Optional
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -198,28 +193,7 @@ class PseudoLabelGenerator2d(nn.Module):
         return torch.from_numpy(ground_truth).to(y.device), torch.from_numpy(ground_false).to(y.device)
     
 class PseudoLabelGenerator2dDark(nn.Module):
-    """
-    Generate ground truth heatmap and ground false heatmap from a prediction.
-
-    Args:
-        num_keypoints (int): Number of keypoints
-        height (int): height of the heatmap. Default: 64
-        width (int): width of the heatmap. Default: 64
-        sigma (int): sigma parameter when generate the heatmap. Default: 2
-
-    Inputs:
-        - y: predicted heatmap
-
-    Outputs:
-        - ground_truth: heatmap conforming to Gaussian distribution
-        - ground_false: ground false heatmap
-
-    Shape:
-        - y: :math:`(minibatch, K, H, W)` where K means the number of keypoints,
-          H and W is the height and width of the heatmap respectively.
-        - ground_truth: :math:`(minibatch, K, H, W)`
-        - ground_false: :math:`(minibatch, K, H, W)`
-    """
+    
     def __init__(self, num_keypoints, height=64, width=64, sigma=2):
         super(PseudoLabelGenerator2dDark, self).__init__()
         self.height = height
@@ -290,45 +264,7 @@ class PseudoLabelGenerator2dDark(nn.Module):
 
 
 class RegressionDisparity(nn.Module):
-    """
-    Regression Disparity proposed by `Regressive Domain Adaptation for Unsupervised Keypoint Detection (CVPR 2021) <https://arxiv.org/abs/2103.06175>`_.
-
-    Args:
-        pseudo_label_generator (PseudoLabelGenerator2d): generate ground truth heatmap and ground false heatmap
-          from a prediction.
-        criterion (torch.nn.Module): the loss function to calculate distance between two predictions.
-
-    Inputs:
-        - y: output by the main head
-        - y_adv: output by the adversarial head
-        - weight (optional): instance weights
-        - mode (str): whether minimize the disparity or maximize the disparity. Choices includes ``min``, ``max``.
-          Default: ``min``.
-
-    Shape:
-        - y: :math:`(minibatch, K, H, W)` where K means the number of keypoints,
-          H and W is the height and width of the heatmap respectively.
-        - y_adv: :math:`(minibatch, K, H, W)`
-        - weight: :math:`(minibatch, K)`.
-        - Output: depends on the ``criterion``.
-
-    Examples::
-
-        >>> num_keypoints = 5
-        >>> batch_size = 10
-        >>> H = W = 64
-        >>> pseudo_label_generator = PseudoLabelGenerator2d(num_keypoints)
-        >>> from common.vision.models.keypoint_detection.loss import JointsKLLoss
-        >>> loss = RegressionDisparity(pseudo_label_generator, JointsKLLoss())
-        >>> # output from source domain and target domain
-        >>> y_s, y_t = torch.randn(batch_size, num_keypoints, H, W), torch.randn(batch_size, num_keypoints, H, W)
-        >>> # adversarial output from source domain and target domain
-        >>> y_s_adv, y_t_adv = torch.randn(batch_size, num_keypoints, H, W), torch.randn(batch_size, num_keypoints, H, W)
-        >>> # minimize regression disparity on source domain
-        >>> output = loss(y_s, y_s_adv, mode='min')
-        >>> # maximize regression disparity on target domain
-        >>> output = loss(y_t, y_t_adv, mode='max')
-    """
+    
     def __init__(self, pseudo_label_generator: PseudoLabelGenerator2d, criterion: nn.Module):
         super(RegressionDisparity, self).__init__()
         self.criterion = criterion
@@ -347,36 +283,7 @@ class RegressionDisparity(nn.Module):
 
 
 class PoseResNet2d(nn.Module):
-    """
-    Pose ResNet for RegDA has one backbone, one upsampling, while two regression heads.
-
-    Args:
-        backbone (torch.nn.Module): Backbone to extract 2-d features from data
-        upsampling (torch.nn.Module): Layer to upsample image feature to heatmap size
-        feature_dim (int): The dimension of the features from upsampling layer.
-        num_keypoints (int): Number of keypoints
-        gl (WarmStartGradientLayer):
-        finetune (bool, optional): Whether use 10x smaller learning rate in the backbone. Default: True
-        num_head_layers (int): Number of head layers. Default: 2
-
-    Inputs:
-        - x (tensor): input data
-
-    Outputs:
-        - outputs: logits outputs by the main regressor
-        - outputs_adv: logits outputs by the adversarial regressor
-
-    Shape:
-        - x: :math:`(minibatch, *)`, same shape as the input of the `backbone`.
-        - outputs, outputs_adv: :math:`(minibatch, K, H, W)`, where K means the number of keypoints.
-
-    .. note::
-        Remember to call function `step()` after function `forward()` **during training phase**! For instance,
-
-            >>> # x is inputs, model is an PoseResNet
-            >>> outputs, outputs_adv = model(x)
-            >>> model.step()
-    """
+    
     def __init__(self, backbone, upsampling, feature_dim, num_keypoints,
                  gl: Optional[WarmStartGradientLayer] = None, finetune: Optional[bool] = True, num_head_layers=2):
         super(PoseResNet2d, self).__init__()
@@ -440,36 +347,7 @@ class PoseResNet2d(nn.Module):
 
         
 class PoseResNet2d_GVB(nn.Module):
-    """
-    Pose ResNet for RegDA has one backbone, one upsampling, while two regression heads.
-
-    Args:
-        backbone (torch.nn.Module): Backbone to extract 2-d features from data
-        upsampling (torch.nn.Module): Layer to upsample image feature to heatmap size
-        feature_dim (int): The dimension of the features from upsampling layer.
-        num_keypoints (int): Number of keypoints
-        gl (WarmStartGradientLayer):
-        finetune (bool, optional): Whether use 10x smaller learning rate in the backbone. Default: True
-        num_head_layers (int): Number of head layers. Default: 2
-
-    Inputs:
-        - x (tensor): input data
-
-    Outputs:
-        - outputs: logits outputs by the main regressor
-        - outputs_adv: logits outputs by the adversarial regressor
-
-    Shape:
-        - x: :math:`(minibatch, *)`, same shape as the input of the `backbone`.
-        - outputs, outputs_adv: :math:`(minibatch, K, H, W)`, where K means the number of keypoints.
-
-    .. note::
-        Remember to call function `step()` after function `forward()` **during training phase**! For instance,
-
-            >>> # x is inputs, model is an PoseResNet
-            >>> outputs, outputs_adv = model(x)
-            >>> model.step()
-    """
+    
     def __init__(self, backbone, upsampling1, upsampling2, upsampling1_adv, upsampling2_adv, feature_dim, num_keypoints,
                  gl: Optional[WarmStartGradientLayer] = None, finetune: Optional[bool] = True, num_head_layers=2):
         super(PoseResNet2d_GVB, self).__init__()
@@ -554,43 +432,12 @@ class PoseResNet2d_GVB(nn.Module):
         ]
 
     def step(self):
-        """Call step() each iteration during training.
-        Will increase :math:`\lambda` in GL layer.
-        """
+        
         self.gl_layer.step()
         
         
 class RegDAPoseResNetRLE(nn.Module):
-    """
-    Pose ResNet for RegDA has one backbone, one upsampling, while two regression heads.
-
-    Args:
-        backbone (torch.nn.Module): Backbone to extract 2-d features from data
-        upsampling (torch.nn.Module): Layer to upsample image feature to heatmap size
-        feature_dim (int): The dimension of the features from upsampling layer.
-        num_keypoints (int): Number of keypoints
-        gl (WarmStartGradientLayer):
-        finetune (bool, optional): Whether use 10x smaller learning rate in the backbone. Default: True
-        num_head_layers (int): Number of head layers. Default: 2
-
-    Inputs:
-        - x (tensor): input data
-
-    Outputs:
-        - outputs: logits outputs by the main regressor
-        - outputs_adv: logits outputs by the adversarial regressor
-
-    Shape:
-        - x: :math:`(minibatch, *)`, same shape as the input of the `backbone`.
-        - outputs, outputs_adv: :math:`(minibatch, K, H, W)`, where K means the number of keypoints.
-
-    .. note::
-        Remember to call function `step()` after function `forward()` **during training phase**! For instance,
-
-            >>> # x is inputs, model is an PoseResNet
-            >>> outputs, outputs_adv = model(x)
-            >>> model.step()
-    """
+   
     def __init__(self, backbone, upsampling, feature_dim, num_keypoints,
                  gl: Optional[WarmStartGradientLayer] = None, finetune: Optional[bool] = True, num_head_layers=2):
         super(RegDAPoseResNetRLE, self).__init__()
@@ -681,17 +528,7 @@ class RegDAPoseResNetRLE(nn.Module):
 
 
 class RealNVP(nn.Module):
-    """RealNVP: a flow-based generative model
-
-    `Density estimation using Real NVP
-    arXiv: <https://arxiv.org/abs/1605.08803>`_.
-
-    Code is modified from `the official implementation of RLE
-    <https://github.com/Jeff-sjtu/res-loglikelihood-regression>`_.
-
-    See also `real-nvp-pytorch
-    <https://github.com/senya-ashukha/real-nvp-pytorch>`_.
-    """
+    
 
     @staticmethod
     def get_scale_net():
