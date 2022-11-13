@@ -1,7 +1,3 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
 import os
 import json
 from PIL import ImageFile
@@ -15,48 +11,12 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 class SURREAL(Body16KeypointDataset):
-    """`Surreal Dataset <https://www.di.ens.fr/willow/research/surreal/data/>`_
-
-    Args:
-        root (str): Root directory of dataset
-        split (str, optional): The dataset split, supports ``train``, ``test``, or ``all``.
-            Default: ``train``.
-        task (str, optional): Placeholder.
-        download (bool, optional): If true, downloads the dataset from the internet and puts it \
-            in root directory. If dataset is already downloaded, it is not downloaded again.
-        transforms (callable, optional): A function/transform that takes in a dict (which contains PIL image and
-            its labels) and returns a transformed version. E.g, :class:`~common.vision.transforms.keypoint_detection.Resize`.
-        image_size (tuple): (width, height) of the image. Default: (256, 256)
-        heatmap_size (tuple): (width, height) of the heatmap. Default: (64, 64)
-        sigma (int): sigma parameter when generate the heatmap. Default: 2
-
-    .. note::
-        We found that the original Surreal image is in high resolution while most part in an image is background,
-        thus we crop the image and keep only the surrounding area of hands (1.5x bigger than hands) to speed up training.
-
-    .. note:: In `root`, there will exist following files after downloading.
-        ::
-            train/
-            test/
-            val/
-    """
-    def __init__(self, root, split='train', task='all', download=True, **kwargs):
+    
+    def __init__(self, root, split='train', task='all', download=False, **kwargs):
         assert split in ['train', 'test', 'val']
         self.split = split
 
-        if download:
-            download_data(root, "train/run0", "train0.tgz", "https://cloud.tsinghua.edu.cn/f/b13604f06ff1445c830a/?dl=1")
-            download_data(root, "train/run1", "train1.tgz", "https://cloud.tsinghua.edu.cn/f/919aefe2de3541c3b940/?dl=1")
-            download_data(root, "train/run2", "train2.tgz", "https://cloud.tsinghua.edu.cn/f/34864760ad4945b9bcd6/?dl=1")
-            download_data(root, "val", "val.tgz", "https://cloud.tsinghua.edu.cn/f/16b20f2e76684f848dc1/?dl=1")
-            download_data(root, "test", "test.tgz", "https://cloud.tsinghua.edu.cn/f/36c72d86e43540e0a913/?dl=1")
-        else:
-            check_exits(root, "train/run0")
-            check_exits(root, "train/run1")
-            check_exits(root, "train/run2")
-            check_exits(root, "val")
-            check_exits(root, "test")
-
+        
         all_samples = []
         for part in [0, 1, 2]:
             annotation_file = os.path.join(root, split, 'run{}.json'.format(part))
