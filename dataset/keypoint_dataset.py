@@ -1,7 +1,4 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
+
 from abc import ABC
 import numpy as np
 from torch.utils.data.dataset import Dataset
@@ -10,20 +7,7 @@ import cv2
 
 
 class KeypointDataset(Dataset, ABC):
-    """A generic dataset class for image keypoint detection
-
-    Args:
-        root (str): Root directory of dataset
-        num_keypoints (int): Number of keypoints
-        samples (list): list of data
-        transforms (callable, optional): A function/transform that takes in a dict (which contains PIL image and
-            its labels) and returns a transformed version. E.g, :class:`~common.vision.transforms.keypoint_detection.Resize`.
-        image_size (tuple): (width, height) of the image. Default: (256, 256)
-        heatmap_size (tuple): (width, height) of the heatmap. Default: (64, 64)
-        sigma (int): sigma parameter when generate the heatmap. Default: 2
-        keypoints_group (dict): a dict that stores the index of different types of keypoints
-        colored_skeleton (dict): a dict that stores the index and color of different skeleton
-    """
+   
     def __init__(self, root, num_keypoints, samples, transforms=None, image_size=(256, 256), heatmap_size=(64, 64),
                  sigma=2, keypoints_group=None, colored_skeleton=None):
         self.root = root
@@ -40,13 +24,7 @@ class KeypointDataset(Dataset, ABC):
         return len(self.samples)
 
     def visualize(self, image, keypoints, filename):
-        """Visualize an image with its keypoints, and store the result into a file
-
-        Args:
-            image (PIL.Image):
-            keypoints (torch.Tensor): keypoints in shape K x 2
-            filename (str): the name of file to store
-        """
+        
         assert self.colored_skeleton is not None
 
         image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2BGR).copy()
@@ -60,15 +38,7 @@ class KeypointDataset(Dataset, ABC):
         cv2.imwrite(filename, image)
 
     def group_accuracy(self, accuracies):
-        """ Group the accuracy of K keypoints into different kinds.
-
-        Args:
-            accuracies (list): accuracy of the K keypoints
-
-        Returns:
-            accuracy of ``N=len(keypoints_group)`` kinds of keypoints
-
-        """
+        
         grouped_accuracies = dict()
         for name, keypoints in self.keypoints_group.items():
             grouped_accuracies[name] = sum([accuracies[idx] for idx in keypoints]) / len(keypoints)
@@ -76,20 +46,7 @@ class KeypointDataset(Dataset, ABC):
 
 
 class AnimalKeypointDataset(Dataset, ABC):
-    """A generic dataset class for image keypoint detection
-
-    Args:
-        root (str): Root directory of dataset
-        num_keypoints (int): Number of keypoints
-        samples (list): list of data
-        transforms (callable, optional): A function/transform that takes in a dict (which contains PIL image and
-            its labels) and returns a transformed version. E.g, :class:`~common.vision.transforms.keypoint_detection.Resize`.
-        image_size (tuple): (width, height) of the image. Default: (256, 256)
-        heatmap_size (tuple): (width, height) of the heatmap. Default: (64, 64)
-        sigma (int): sigma parameter when generate the heatmap. Default: 2
-        keypoints_group (dict): a dict that stores the index of different types of keypoints
-        colored_skeleton (dict): a dict that stores the index and color of different skeleton
-    """
+   
     def __init__(self, root, num_keypoints, samples, transforms=None, image_size=(256, 256), heatmap_size=(64, 64),
                  sigma=2, keypoints_group=None, colored_skeleton=None):
         self.root = root
@@ -106,13 +63,7 @@ class AnimalKeypointDataset(Dataset, ABC):
         return len(self.samples)
 
     def visualize(self, image, keypoints, filename):
-        """Visualize an image with its keypoints, and store the result into a file
-
-        Args:
-            image (PIL.Image):
-            keypoints (torch.Tensor): keypoints in shape K x 2
-            filename (str): the name of file to store
-        """
+        
         assert self.colored_skeleton is not None
 
         #image = cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2BGR).copy()
@@ -129,15 +80,7 @@ class AnimalKeypointDataset(Dataset, ABC):
         cv2.imwrite(filename, image)
 
     def group_accuracy(self, accuracies):
-        """ Group the accuracy of K keypoints into different kinds.
-
-        Args:
-            accuracies (list): accuracy of the K keypoints
-
-        Returns:
-            accuracy of ``N=len(keypoints_group)`` kinds of keypoints
-
-        """
+        
         grouped_accuracies = dict()
         for name, keypoints in self.keypoints_group.items():
             grouped_accuracies[name] = sum([accuracies[idx] for idx in keypoints]) / len(keypoints)
