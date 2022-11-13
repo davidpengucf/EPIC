@@ -11,18 +11,7 @@ T_co = TypeVar('T_co', covariant=True)
 T = TypeVar('T')
 
 def send_to_device(tensor, device):
-    """
-    Recursively sends the elements in a nested list/tuple/dictionary of tensors to a given device.
-
-    Args:
-        tensor (nested list/tuple/dictionary of :obj:`torch.Tensor`):
-            The data to send to a given device.
-        device (:obj:`torch.device`):
-            The device to send the data to
-
-    Returns:
-        The same data structure as :obj:`tensor` with all tensors sent to the proper device.
-    """
+    
     if isinstance(tensor, (list, tuple)):
         return type(tensor)(send_to_device(t, device) for t in tensor)
     elif isinstance(tensor, dict):
@@ -33,7 +22,7 @@ def send_to_device(tensor, device):
 
 
 class ForeverDataIterator:
-    r"""A data iterator that will never stop producing data"""
+    
 
     def __init__(self, data_loader: DataLoader, device=None):
         self.data_loader = data_loader
