@@ -32,30 +32,7 @@ class GradientFunction(Function):
 
 
 class WarmStartGradientLayer(nn.Module):
-    """Warm Start Gradient Layer :math:`\mathcal{R}(x)` with warm start
-
-        The forward and backward behaviours are:
-
-        .. math::
-            \mathcal{R}(x) = x,
-
-            \dfrac{ d\mathcal{R}} {dx} = \lambda I.
-
-        :math:`\lambda` is initiated at :math:`lo` and is gradually changed to :math:`hi` using the following schedule:
-
-        .. math::
-            \lambda = \dfrac{2(hi-lo)}{1+\exp(- α \dfrac{i}{N})} - (hi-lo) + lo
-
-        where :math:`i` is the iteration step.
-
-        Parameters:
-            - **alpha** (float, optional): :math:`α`. Default: 1.0
-            - **lo** (float, optional): Initial value of :math:`\lambda`. Default: 0.0
-            - **hi** (float, optional): Final value of :math:`\lambda`. Default: 1.0
-            - **max_iters** (int, optional): :math:`N`. Default: 1000
-            - **auto_step** (bool, optional): If True, increase :math:`i` each time `forward` is called.
-              Otherwise use function `step` to increase :math:`i`. Default: False
-        """
+   
 
     def __init__(self, alpha: Optional[float] = 1.0, lo: Optional[float] = 0.0, hi: Optional[float] = 1.,
                  max_iters: Optional[int] = 1000., auto_step: Optional[bool] = False):
@@ -102,28 +79,7 @@ class FastPseudoLabelGenerator2d(nn.Module):
 
 
 class PseudoLabelGenerator2d(nn.Module):
-    """
-    Generate ground truth heatmap and ground false heatmap from a prediction.
-
-    Args:
-        num_keypoints (int): Number of keypoints
-        height (int): height of the heatmap. Default: 64
-        width (int): width of the heatmap. Default: 64
-        sigma (int): sigma parameter when generate the heatmap. Default: 2
-
-    Inputs:
-        - y: predicted heatmap
-
-    Outputs:
-        - ground_truth: heatmap conforming to Gaussian distribution
-        - ground_false: ground false heatmap
-
-    Shape:
-        - y: :math:`(minibatch, K, H, W)` where K means the number of keypoints,
-          H and W is the height and width of the heatmap respectively.
-        - ground_truth: :math:`(minibatch, K, H, W)`
-        - ground_false: :math:`(minibatch, K, H, W)`
-    """
+   
     def __init__(self, num_keypoints, height=64, width=64, sigma=2):
         super(PseudoLabelGenerator2d, self).__init__()
         self.height = height
