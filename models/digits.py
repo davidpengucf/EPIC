@@ -1,7 +1,3 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
 import torch.nn as nn
 
 
@@ -57,16 +53,7 @@ class DTN(nn.Sequential):
 
 
 def lenet(pretrained=False, **kwargs):
-    """LeNet model from
-    `"Gradient-based learning applied to document recognition" <http://yann.lecun.com/exdb/publis/pdf/lecun-98.pdf>`_
-
-    Args:
-        num_classes (int): number of classes. Default: 10
-
-    .. note::
-        The input image size must be 28 x 28.
-
-    """
+   
     return LeNet(**kwargs)
 
 
