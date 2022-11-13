@@ -1,8 +1,3 @@
-"""
-Modified from https://github.com/microsoft/human-pose-estimation.pytorch
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
 import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
@@ -12,13 +7,7 @@ import einops
 from model import RealNVP
 
 class JointsOHKMMSELoss(nn.Module):
-    """MSE loss with online hard keypoint mining.
-    Args:
-        use_target_weight (bool): Option to use weighted MSE loss.
-            Different joint types may have different target weights.
-        topk (int): Only top k joint losses are kept.
-        loss_weight (float): Weight of the loss. Default: 1.0.
-    """
+    
 
     def __init__(self, use_target_weight=False, topk=8, loss_weight=1.):
         super().__init__()
@@ -69,29 +58,7 @@ class JointsOHKMMSELoss(nn.Module):
         return self._ohkm(losses) * self.loss_weight
 
 class EntropyLoss(nn.Module):
-    """
-    KL Divergence for keypoint detection proposed by
-    `Regressive Domain Adaptation for Unsupervised Keypoint Detection <https://arxiv.org/abs/2103.06175>`_.
-
-    Args:
-        reduction (str, optional): Specifies the reduction to apply to the output:
-          ``'none'`` | ``'mean'``. ``'none'``: no reduction will be applied,
-          ``'mean'``: the sum of the output will be divided by the number of
-          elements in the output. Default: ``'mean'``
-
-    Inputs:
-        - output (tensor): heatmap predictions
-        - target (tensor): heatmap labels
-        - target_weight (tensor): whether the keypoint is visible. All keypoint is visible if None. Default: None.
-
-    Shape:
-        - output: :math:`(minibatch, K, H, W)` where K means the number of keypoints,
-          H and W is the height and width of the heatmap respectively.
-        - target: :math:`(minibatch, K, H, W)`.
-        - target_weight: :math:`(minibatch, K)`.
-        - Output: scalar by default. If :attr:`reduction` is ``'none'``, then :math:`(minibatch, K)`.
-
-    """
+   
     def __init__(self, mi=False):
         super(EntropyLoss, self).__init__()
         self.mi = mi
@@ -128,23 +95,7 @@ class EntropyLoss(nn.Module):
             return - mean_loss
 
 class RLELoss(nn.Module):
-    """RLE Loss.
-
-    `Human Pose Regression With Residual Log-Likelihood Estimation
-    arXiv: <https://arxiv.org/abs/2107.11291>`_.
-
-    Code is modified from `the official implementation
-    <https://github.com/Jeff-sjtu/res-loglikelihood-regression>`_.
-
-    Args:
-        use_target_weight (bool): Option to use weighted MSE loss.
-            Different joint types may have different target weights.
-        size_average (bool): Option to average the loss by the batch_size.
-        residual (bool): Option to add L1 loss and let the flow
-            learn the residual error distribution.
-        q_dis (string): Option for the identity Q(error) distribution,
-            Options: "laplace" or "gaussian"
-    """
+    
 
     def __init__(self,
                  use_target_weight=False,
@@ -160,20 +111,7 @@ class RLELoss(nn.Module):
         self.flow_model = RealNVP()
 
     def forward(self, pred, sigma, target, target_weight=None):
-        """Forward function.
-
-        Note:
-            - batch_size: N
-            - num_keypoints: K
-            - dimension of keypoints: D (D=2 or D=3)
-
-        Args:
-            output (torch.Tensor[N, K, D*2]): Output regression,
-                    including coords and sigmas.
-            target (torch.Tensor[N, K, D]): Target regression.
-            target_weight (torch.Tensor[N, K, D]):
-                Weights across different joint types.
-        """
+        
         #pred = output[:, :, :2]
         #sigma = output[:, :, 2:4].sigmoid()
         sigma = sigma.softmax(dim=2)
@@ -333,28 +271,7 @@ def oks_loss(pred_hm, gt_hm, weight, num_keypoints):
 
 
 class JointsMSELoss(nn.Module):
-    """
-    Typical MSE loss for keypoint detection.
-
-    Args:
-        reduction (str, optional): Specifies the reduction to apply to the output:
-          ``'none'`` | ``'mean'``. ``'none'``: no reduction will be applied,
-          ``'mean'``: the sum of the output will be divided by the number of
-          elements in the output. Default: ``'mean'``
-
-    Inputs:
-        - output (tensor): heatmap predictions
-        - target (tensor): heatmap labels
-        - target_weight (tensor): whether the keypoint is visible. All keypoint is visible if None. Default: None.
-
-    Shape:
-        - output: :math:`(minibatch, K, H, W)` where K means the number of keypoints,
-          H and W is the height and width of the heatmap respectively.
-        - target: :math:`(minibatch, K, H, W)`.
-        - target_weight: :math:`(minibatch, K)`.
-        - Output: scalar by default. If :attr:`reduction` is ``'none'``, then :math:`(minibatch, K)`.
-
-    """
+    
     def __init__(self, reduction='mean'):
         super(JointsMSELoss, self).__init__()
         self.criterion = nn.MSELoss(reduction='none')
@@ -374,29 +291,7 @@ class JointsMSELoss(nn.Module):
 
 
 class JointsKLLoss(nn.Module):
-    """
-    KL Divergence for keypoint detection proposed by
-    `Regressive Domain Adaptation for Unsupervised Keypoint Detection <https://arxiv.org/abs/2103.06175>`_.
-
-    Args:
-        reduction (str, optional): Specifies the reduction to apply to the output:
-          ``'none'`` | ``'mean'``. ``'none'``: no reduction will be applied,
-          ``'mean'``: the sum of the output will be divided by the number of
-          elements in the output. Default: ``'mean'``
-
-    Inputs:
-        - output (tensor): heatmap predictions
-        - target (tensor): heatmap labels
-        - target_weight (tensor): whether the keypoint is visible. All keypoint is visible if None. Default: None.
-
-    Shape:
-        - output: :math:`(minibatch, K, H, W)` where K means the number of keypoints,
-          H and W is the height and width of the heatmap respectively.
-        - target: :math:`(minibatch, K, H, W)`.
-        - target_weight: :math:`(minibatch, K)`.
-        - Output: scalar by default. If :attr:`reduction` is ``'none'``, then :math:`(minibatch, K)`.
-
-    """
+    
     def __init__(self, reduction='mean', epsilon=0.):
         super(JointsKLLoss, self).__init__()
         self.criterion = nn.KLDivLoss(reduction='none')
