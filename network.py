@@ -1,8 +1,3 @@
-"""
-Modified from https://github.com/microsoft/human-pose-estimation.pytorch
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
 import torch.nn as nn
 import copy
 from resnet import _resnet, Bottleneck
@@ -10,9 +5,7 @@ from einops.layers.torch import Rearrange
 
 
 class Upsampling(nn.Sequential):
-    """
-    3-layers deconvolution used in `Simple Baseline <https://arxiv.org/abs/1804.06208>`_.
-    """
+   
     def __init__(self, in_channel=2048, hidden_dims=(256, 256, 256), kernel_sizes=(4, 4, 4), bias=False):
         assert len(hidden_dims) == len(kernel_sizes), \
             'ERROR: len(hidden_dims) is different len(kernel_sizes)'
@@ -58,16 +51,7 @@ class Upsampling(nn.Sequential):
 
 
 class PoseResNet(nn.Module):
-    """
-    `Simple Baseline <https://arxiv.org/abs/1804.06208>`_ for keypoint detection.
-
-    Args:
-        backbone (torch.nn.Module): Backbone to extract 2-d features from data
-        upsampling (torch.nn.Module): Layer to upsample image feature to heatmap size
-        feature_dim (int): The dimension of the features from upsampling layer.
-        num_keypoints (int): Number of keypoints
-        finetune (bool, optional): Whether use 10x smaller learning rate in the backbone. Default: False
-    """
+    
     def __init__(self, backbone, upsampling, feature_dim, num_keypoints, finetune=False):
         super(PoseResNet, self).__init__()
         self.backbone = backbone
@@ -95,16 +79,7 @@ class PoseResNet(nn.Module):
         ]
         
 class PoseResNet_GVB(nn.Module):
-    """
-    `Simple Baseline <https://arxiv.org/abs/1804.06208>`_ for keypoint detection.
-
-    Args:
-        backbone (torch.nn.Module): Backbone to extract 2-d features from data
-        upsampling (torch.nn.Module): Layer to upsample image feature to heatmap size
-        feature_dim (int): The dimension of the features from upsampling layer.
-        num_keypoints (int): Number of keypoints
-        finetune (bool, optional): Whether use 10x smaller learning rate in the backbone. Default: False
-    """
+    
     def __init__(self, backbone, upsampling1, upsampling2, feature_dim, num_keypoints, finetune=False):
         super(PoseResNet_GVB, self).__init__()
         self.backbone = backbone
@@ -137,16 +112,7 @@ class PoseResNet_GVB(nn.Module):
         ]
     
 class PoseResNetRLE(nn.Module):
-    """
-    `Simple Baseline <https://arxiv.org/abs/1804.06208>`_ for keypoint detection.
-
-    Args:
-        backbone (torch.nn.Module): Backbone to extract 2-d features from data
-        upsampling (torch.nn.Module): Layer to upsample image feature to heatmap size
-        feature_dim (int): The dimension of the features from upsampling layer.
-        num_keypoints (int): Number of keypoints
-        finetune (bool, optional): Whether use 10x smaller learning rate in the backbone. Default: False
-    """
+    
     def __init__(self, backbone, upsampling, feature_dim, num_keypoints, finetune=False):
         super(PoseResNetRLE, self).__init__()
         self.backbone = backbone
@@ -193,13 +159,5 @@ def _pose_resnet(arch, num_keypoints, block, layers, pretrained_backbone, deconv
 
 
 def pose_resnet101(num_keypoints, pretrained_backbone=True, deconv_with_bias=False, finetune=False, progress=True, **kwargs):
-    """Constructs a Simple Baseline model with a ResNet-101 backbone.
-
-    Args:
-        num_keypoints (int): number of keypoints
-        pretrained_backbone (bool, optional): If True, returns a model pre-trained on ImageNet. Default: True.
-        deconv_with_bias (bool, optional): Whether use bias in the deconvolution layer. Default: False
-        finetune (bool, optional): Whether use 10x smaller learning rate in the backbone. Default: False
-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default: True
-    """
+    
     return _pose_resnet('resnet101', num_keypoints, Bottleneck, [3, 4, 23, 3], pretrained_backbone, deconv_with_bias, finetune, progress, **kwargs)
