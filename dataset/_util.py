@@ -1,26 +1,10 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
 import os
 from typing import List
 from torchvision.datasets.utils import download_and_extract_archive
 
 
 def download(root: str, file_name: str, archive_name: str, url_link: str):
-    """
-    Download file from internet url link.
-
-    Args:
-        root (str) The directory to put downloaded files.
-        file_name: (str) The name of the unzipped file.
-        archive_name: (str) The name of archive(zipped file) downloaded.
-        url_link: (str) The url link to download data.
-
-    .. note::
-        If `file_name` already exists under path `root`, then it is not downloaded again.
-        Else `archive_name` will be downloaded from `url_link` and extracted to `file_name`.
-    """
+    
     if not os.path.exists(os.path.join(root, file_name)):
         print("Downloading {}".format(file_name))
         # if os.path.exists(os.path.join(root, archive_name)):
