@@ -1,7 +1,4 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
+
 import torch
 import os
 import pickle
@@ -13,31 +10,8 @@ from .util import *
 
 
 class RenderedHandPose(Hand21KeypointDataset):
-    """`Rendered Handpose Dataset <https://lmb.informatik.uni-freiburg.de/resources/datasets/RenderedHandposeDataset.en.html>`_
-
-    Args:
-        root (str): Root directory of dataset
-        split (str, optional): The dataset split, supports ``train``, ``test``, or ``all``.
-        task (str, optional): Placeholder.
-        download (bool, optional): If true, downloads the dataset from the internet and puts it \
-            in root directory. If dataset is already downloaded, it is not downloaded again.
-        transforms (callable, optional): A function/transform that takes in a dict (which contains PIL image and
-            its labels) and returns a transformed version. E.g, :class:`~common.vision.transforms.keypoint_detection.Resize`.
-        image_size (tuple): (width, height) of the image. Default: (256, 256)
-        heatmap_size (tuple): (width, height) of the heatmap. Default: (64, 64)
-        sigma (int): sigma parameter when generate the heatmap. Default: 2
-
-    .. note:: In `root`, there will exist following files after downloading.
-        ::
-            RHD_published_v2/
-                training/
-                evaluation/
-    """
-    def __init__(self, root, split='train', task='all', download=True, **kwargs):
-        if download:
-            download_data(root, "RHD_published_v2", "RHD_v1-1.zip", "https://lmb.informatik.uni-freiburg.de/data/RenderedHandpose/RHD_v1-1.zip")
-        else:
-            check_exits(root, "RHD_published_v2")
+   
+    def __init__(self, root, split='train', task='all', download=False, **kwargs):
 
         root = os.path.join(root, "RHD_published_v2")
 
