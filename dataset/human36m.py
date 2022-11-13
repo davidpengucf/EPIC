@@ -1,7 +1,3 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
 import os
 import json
 import tqdm
@@ -15,38 +11,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 class Human36M(Body16KeypointDataset):
-    """`Human3.6M Dataset <http://vision.imar.ro/human3.6m/description.php>`_
-
-    Args:
-        root (str): Root directory of dataset
-        split (str, optional): The dataset split, supports ``train``, ``test``, or ``all``.
-            Default: ``train``.
-        task (str, optional): Placeholder.
-        download (bool, optional): Placeholder.
-        transforms (callable, optional): A function/transform that takes in a dict (which contains PIL image and
-            its labels) and returns a transformed version. E.g, :class:`~common.vision.transforms.keypoint_detection.Resize`.
-        image_size (tuple): (width, height) of the image. Default: (256, 256)
-        heatmap_size (tuple): (width, height) of the heatmap. Default: (64, 64)
-        sigma (int): sigma parameter when generate the heatmap. Default: 2
-
-    .. note:: You need to download Human36M manually.
-        Ensure that there exist following files in the `root` directory before you using this class.
-        ::
-            annotations/
-                Human36M_subject11_joint_3d.json
-                ...
-            images/
-
-    .. note::
-        We found that the original Human3.6M image is in high resolution while most part in an image is background,
-        thus we crop the image and keep only the surrounding area of hands (1.5x bigger than hands) to speed up training.
-        In `root`, there will exist following files after crop.
-        ::
-            Human36M_crop/
-            annotations/
-                keypoints2d_11.json
-                ...
-    """
+    
     def __init__(self, root, split='train', task='all', download=True, **kwargs):
         assert split in ['train', 'test', 'all']
         self.split = split
