@@ -1,8 +1,3 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
-# TODO: add documentation
 import numpy as np
 import torch
 import torchvision
