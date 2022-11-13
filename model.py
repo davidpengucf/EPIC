@@ -521,10 +521,6 @@ class RegDAPoseResNetRLE(nn.Module):
         self.gl_layer.step()
         
         
-# Copyright (c) OpenMMLab. All rights reserved.
-#import torch
-#import torch.nn as nn
-#from torch import distributions
 
 
 class RealNVP(nn.Module):
