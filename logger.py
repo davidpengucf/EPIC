@@ -1,18 +1,9 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
 import os
 import sys
 import time
 
 class TextLogger(object):
-    """Writes stream output to external text file.
 
-    Args:
-        filename (str): the file to write stream output
-        stream: the stream to read from. Default: sys.stdout
-    """
     def __init__(self, filename, stream=sys.stdout):
         self.terminal = stream
         self.log = open(filename, 'a')
@@ -32,17 +23,7 @@ class TextLogger(object):
 
 
 class CompleteLogger:
-    """
-    A useful logger that
-
-    - writes outputs to files and displays them on the console at the same time.
-    - manages the directory of checkpoints and debugging images.
-
-    Args:
-        root (str): the root directory of logger
-        phase (str): the phase of training.
-
-    """
+    
 
     def __init__(self, root, phase='train'):
         self.root = root
@@ -67,7 +48,7 @@ class CompleteLogger:
             self.set_epoch(phase)
 
     def set_epoch(self, epoch):
-        """Set the epoch number. Please use it during training."""
+        
         os.makedirs(os.path.join(self.visualize_directory, str(epoch)), exist_ok=True)
         self.epoch = epoch
 
@@ -78,21 +59,11 @@ class CompleteLogger:
             return self.phase
 
     def get_image_path(self, filename: str):
-        """
-        Get the full image path for a specific filename
-        """
+        
         return os.path.join(self.visualize_directory, self._get_phase_or_epoch(), filename)
 
     def get_checkpoint_path(self, name=None):
-        """
-        Get the full checkpoint path.
-
-        Args:
-            name (optional): the filename (without file extension) to save checkpoint.
-                If None, when the phase is ``train``, checkpoint will be saved to ``{epoch}.pth``.
-                Otherwise, will be saved to ``{phase}.pth``.
-
-        """
+        
         if name is None:
             name = self._get_phase_or_epoch()
         name = str(name)
