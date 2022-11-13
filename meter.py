@@ -1,20 +1,9 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
+
 from typing import Optional, List
 
 
 class AverageMeter(object):
-    r"""Computes and stores the average and current value.
-
-    Examples::
-
-        >>> # Initialize a meter to record loss
-        >>> losses = AverageMeter()
-        >>> # Update meter after every minibatch update
-        >>> losses.update(loss_value, batch_size)
-    """
+    
     def __init__(self, name: str, fmt: Optional[str] = ':f'):
         self.name = name
         self.fmt = fmt
