@@ -1,24 +1,9 @@
-"""
-@author: Junguang Jiang
-@contact: JiangJunguang1123@outlook.com
-"""
 import numpy as np
 import cv2
 
 
 def generate_target(joints, joints_vis, heatmap_size, sigma, image_size, ptf=False):
-    """Generate heatamap for joints.
-
-    Args:
-        joints: (K, 2)
-        joints_vis: (K, 1)
-        heatmap_size: W, H
-        sigma:
-        image_size:
-
-    Returns:
-
-    """
+    
     #print('util-generate_target: test',ptf)
     #if ptf == True: print('util-generate_target: joints', joints) (21, 3)
     #if ptf == True: print('util-generate_target: joints_vis', joints_vis) ones(21, 1)
@@ -107,11 +92,7 @@ def keypoint3d_to_2d(keypoint3d: np.ndarray, intrinsic_matrix: np.ndarray):
 
 
 def scale_box(box, image_width, image_height, scale, prt=False):
-    """
-    Change `box` to a square box.
-    The side with of the square box will be `scale` * max(w, h)
-    where w and h is the width and height of the origin box
-    """
+    
     left, upper, right, lower = box
     #if prt: print("util-scale_box: original box", box) (136.6, 62.39, 193.0, 169.3)
     center_x, center_y = (left + right) / 2, (upper + lower) / 2
