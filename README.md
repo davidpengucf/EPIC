@@ -1,4 +1,4 @@
-# [**[CVPR-2024] 	Exploiting Aggregation and Segregation of Representations for Domain Adaptive Human Pose Estimation**](https://arxiv.org/abs/2412.20538)
+# [**[2025 IEEE International Conference on Automatic Face and Gesture Recognition (FG 2025)] 	Exploiting Aggregation and Segregation of Representations for Domain Adaptive Human Pose Estimation**](https://arxiv.org/abs/2412.20538)
 
 ### Run Training Codes
 
